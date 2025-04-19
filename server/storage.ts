@@ -40,7 +40,7 @@ export interface IStorage {
   getActiveFormCount(userId: number): Promise<number>;
   
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any to avoid type issues with session.SessionStore
 }
 
 export class MemStorage implements IStorage {
@@ -52,7 +52,7 @@ export class MemStorage implements IStorage {
   private formId: number;
   private subscriberId: number;
   private activityId: number;
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any to avoid type issues with session.SessionStore
 
   constructor() {
     this.users = new Map();

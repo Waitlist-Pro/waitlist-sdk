@@ -15,7 +15,7 @@ import { pool } from './db';
 const PostgresSessionStore = ConnectPg(session);
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any to avoid type issues with session.SessionStore
   
   constructor() {
     this.sessionStore = new PostgresSessionStore({
@@ -132,7 +132,7 @@ export class DatabaseStorage implements IStorage {
         .from(subscribers)
         .where(formIds.length === 1 
           ? eq(subscribers.formId, formIds[0]) 
-          : subscribers.formId.in(formIds));
+          : inArray(subscribers.formId, formIds));
       return result[0]?.count || 0;
     }
     
@@ -163,7 +163,7 @@ export class DatabaseStorage implements IStorage {
         .from(subscribers)
         .where(formIds.length === 1 
           ? eq(subscribers.formId, formIds[0]) 
-          : subscribers.formId.in(formIds))
+          : inArray(subscribers.formId, formIds))
         .orderBy(desc(subscribers.createdAt))
         .limit(limit);
     }
@@ -218,7 +218,7 @@ export class DatabaseStorage implements IStorage {
         and(
           formIds.length === 1 
             ? eq(subscribers.formId, formIds[0]) 
-            : subscribers.formId.in(formIds),
+            : inArray(subscribers.formId, formIds),
           gte(subscribers.createdAt, oneMonthAgo)
         )
       );
