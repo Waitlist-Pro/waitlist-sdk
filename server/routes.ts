@@ -118,10 +118,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       userData.password = await bcrypt.hash(userData.password, 10);
       
       const user = await storage.createUser(userData);
-      // Don't return the password
-      const { password, ...userWithoutPassword } = user;
       
-      res.status(201).json(userWithoutPassword);
+      // Log the user in immediately after registration
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Error during automatic login" });
+        }
+        // Don't return the password
+        const { password, ...userWithoutPassword } = user;
+        return res.status(201).json(userWithoutPassword);
+      });
     } catch (error) {
       console.error("Registration error:", error);
       if (error instanceof z.ZodError) {

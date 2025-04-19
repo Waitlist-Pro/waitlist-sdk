@@ -60,10 +60,10 @@ export default function Register() {
 
       toast({
         title: "Account created successfully",
-        description: "Please sign in with your new account",
+        description: "You are now being redirected to your dashboard",
       });
 
-      navigate("/login");
+      navigate("/");
     } catch (error: any) {
       toast({
         title: "Registration failed",
