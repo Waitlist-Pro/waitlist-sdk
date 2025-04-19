@@ -445,6 +445,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error fetching form data" });
     }
   });
+  
+  // Public version of get form by ID - for preview functionality
+  // Needs to go before the authenticated version
+  apiRouter.get("/preview/form/:id", async (req, res) => {
+    try {
+      const formId = parseInt(req.params.id);
+      if (isNaN(formId)) {
+        return res.status(400).json({ message: "Invalid form ID" });
+      }
+      
+      const form = await storage.getForm(formId);
+      if (!form) {
+        return res.status(404).json({ message: "Form not found" });
+      }
+      
+      res.json(form);
+    } catch (error) {
+      console.error("Get form preview error:", error);
+      res.status(500).json({ message: "Server error fetching form" });
+    }
+  });
 
   // Register API router
   app.use("/api", apiRouter);

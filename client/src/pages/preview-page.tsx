@@ -22,7 +22,7 @@ const PreviewPage = () => {
           return;
         }
         
-        const res = await apiRequest('GET', `/api/forms/${formId}`);
+        const res = await apiRequest('GET', `/api/preview/form/${formId}`);
         const data = await res.json();
         setForm(data);
         setLoading(false);
