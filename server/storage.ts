@@ -5,6 +5,7 @@ import {
   type Subscriber, type InsertSubscriber,
   type Activity, type InsertActivity
 } from "@shared/schema";
+import session from "express-session";
 
 export interface IStorage {
   // User methods
@@ -37,6 +38,9 @@ export interface IStorage {
   getMonthlySubscriberCount(userId: number): Promise<number>;
   getConversionRate(userId: number): Promise<number>;
   getActiveFormCount(userId: number): Promise<number>;
+  
+  // Session store
+  sessionStore: session.SessionStore;
 }
 
 export class MemStorage implements IStorage {
@@ -48,6 +52,7 @@ export class MemStorage implements IStorage {
   private formId: number;
   private subscriberId: number;
   private activityId: number;
+  sessionStore: session.SessionStore;
 
   constructor() {
     this.users = new Map();
@@ -58,6 +63,11 @@ export class MemStorage implements IStorage {
     this.formId = 1;
     this.subscriberId = 1;
     this.activityId = 1;
+    
+    const MemoryStore = require('memorystore')(session);
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
   }
 
   // User methods
@@ -218,4 +228,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Import the database storage
+import { DatabaseStorage } from './database-storage';
+
+// Use the DatabaseStorage implementation for database persistence
+export const storage = new DatabaseStorage();
