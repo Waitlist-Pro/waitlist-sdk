@@ -73,7 +73,12 @@ const isAuthenticated = (req: Request, res: Response, next: any) => {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Configure session
   app.use(session({
-    cookie: { maxAge: 86400000 }, // 24 hours
+    cookie: { 
+      maxAge: 86400000, // 24 hours
+      secure: false,    // Allow non-HTTPS (for development)
+      sameSite: 'lax', // Helps with CSRF protection while allowing GET requests
+      httpOnly: true    // Prevents JavaScript from reading cookie
+    },
     store: new SessionStore({
       checkPeriod: 86400000 // prune expired entries every 24h
     }),
@@ -109,8 +114,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create user
       const { confirmPassword, ...userData } = validatedData;
-      // In a real application, hash the password
-      // userData.password = await bcrypt.hash(userData.password, 10);
+      // Hash the password for security
+      userData.password = await bcrypt.hash(userData.password, 10);
       
       const user = await storage.createUser(userData);
       // Don't return the password

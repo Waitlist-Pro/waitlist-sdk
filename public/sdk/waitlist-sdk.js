@@ -54,7 +54,9 @@
     }
     
     try {
-      const response = await fetch(`/api/sdk/form/${options.formId}`);
+      // Make sure the URL is correct for the API
+      const apiBaseUrl = window.location.origin;
+      const response = await fetch(`${apiBaseUrl}/api/sdk/form/${options.formId}`);
       if (!response.ok) {
         throw new Error(`Failed to load form: ${response.statusText}`);
       }
@@ -151,7 +153,8 @@
         submitButton.textContent = 'Joining...';
       }
 
-      const response = await fetch('/api/subscribers', {
+      const apiBaseUrl = window.location.origin;
+      const response = await fetch(`${apiBaseUrl}/api/subscribers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
