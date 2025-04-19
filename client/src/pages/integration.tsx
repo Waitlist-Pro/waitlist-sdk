@@ -368,23 +368,37 @@ const Integration = () => {
                           {getIntegrationCode(selectedFormId)}
                         </pre>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="mt-4 flex items-center" 
-                        onClick={copyToClipboard}
-                      >
-                        {copied ? (
-                          <>
-                            <Check className="mr-2 h-4 w-4" />
-                            Copied
-                          </>
-                        ) : (
-                          <>
-                            <Clipboard className="mr-2 h-4 w-4" />
-                            Copy Code
-                          </>
-                        )}
-                      </Button>
+                      <div className="flex space-x-2 mt-4">
+                        <Button 
+                          variant="outline" 
+                          className="flex items-center" 
+                          onClick={copyToClipboard}
+                        >
+                          {copied ? (
+                            <>
+                              <Check className="mr-2 h-4 w-4" />
+                              Copied
+                            </>
+                          ) : (
+                            <>
+                              <Clipboard className="mr-2 h-4 w-4" />
+                              Copy Code
+                            </>
+                          )}
+                        </Button>
+
+                        <Button 
+                          variant="secondary" 
+                          className="flex items-center"
+                          onClick={() => window.open(`/preview/${selectedFormId}`, '_blank')}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          View Preview
+                        </Button>
+                      </div>
                       
                       <div className="mt-6">
                         <h3 className="text-base font-medium mb-2">Implementation Steps:</h3>

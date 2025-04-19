@@ -11,6 +11,7 @@ import Settings from "@/pages/settings";
 import Analytics from "@/pages/analytics";
 import Integration from "@/pages/integration";
 import Documentation from "@/pages/documentation";
+import PreviewPage from "@/pages/preview-page";
 import { ThemeProvider } from "@/components/theme-provider";
 import Sidebar from "@/components/layout/sidebar";
 import MobileMenu from "@/components/layout/mobile-menu";
@@ -48,6 +49,8 @@ function Router() {
     checkAuth();
   }, [location]);
 
+  // Check if current location is for preview (which doesn't require auth)
+  const isPreviewPage = location.startsWith('/preview/');
   const isAuthPage = location === "/login" || location === "/register";
 
   if (isLoading) {
@@ -58,7 +61,8 @@ function Router() {
     );
   }
 
-  if (!isAuthenticated && !isAuthPage) {
+  // Allow preview pages without authentication
+  if (!isAuthenticated && !isAuthPage && !isPreviewPage) {
     window.location.href = "/login";
     return null;
   }
@@ -70,7 +74,14 @@ function Router() {
 
   return (
     <>
-      {isAuthenticated && (
+      {/* Preview route is always accessible regardless of authentication */}
+      {isPreviewPage && (
+        <Switch>
+          <Route path="/preview/:formId" component={PreviewPage} />
+        </Switch>
+      )}
+
+      {isAuthenticated && !isPreviewPage && (
         <div className="flex flex-col md:flex-row min-h-screen">
           <Sidebar user={user} />
           <MobileMenu />
@@ -88,7 +99,7 @@ function Router() {
         </div>
       )}
 
-      {!isAuthenticated && (
+      {!isAuthenticated && !isPreviewPage && (
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
